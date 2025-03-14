@@ -1,0 +1,121 @@
+Solution pour l'API REST de Gestion de Tâches
+
+1. Explication détaillée du code
+
+L'API REST de gestion de tâches permet d'ajouter, de modifier, de supprimer et de récupérer des tâches via plusieurs endpoints. Elle est développée avec Spring Boot et utilise une base de données relationnelle via JPA.
+
+Les principaux composants sont :
+
+TaskController : Gère les requêtes HTTP.
+
+TaskService : Contient la logique métier.
+
+TaskRepository : Interface JPA pour accéder à la base de données.
+
+TaskDTO : Objet de transfert des données (Data Transfer Object).
+
+TaskDoesNotExist : Exception personnalisée pour les tâches inexistantes.
+
+Estatut : Enum pour définir les différents statuts des tâches.
+
+2. Structure du projet
+
+Le projet suit une architecture MVC.
+|-- src/main/java/com/example/demo
+    |-- controller/TaskController.java
+    |-- service/TaskService.java
+    |-- service/TaskServiceInterface.java
+    |-- repository/TaskRepository.java
+    |-- dto/TaskDTO.java
+    |-- bo/Task.java
+    |-- exception/TaskDoesNotExist.java
+    |-- ApiRestApplication.java
+
+
+3. Implémentation des endpoints
+
+1. Création d'une tâche
+
+POST /api/tasks/create
+Reçoit un objet TaskDTO en JSON.
+Initialise dateCreation à l'instant actuel et statut à PENDING.
+Sauvegarde dans la base de données.
+
+2. Récupération de toutes les tâches
+
+GET /api/tasks
+Retourne la liste de toutes les tâches enregistrées.
+
+3. Suppression d'une tâche
+
+DELETE /api/tasks/deleteById/{id}
+Supprime une tâche si elle existe.
+Retourne une exception TaskDoesNotExist si l'ID est inexistant.
+
+4. Modification du statut d'une tâche
+
+PUT /api/tasks/{id}?statut=IN_PROGRESS
+Change le statut d'une tâche en PENDING, IN_PROGRESS, ou COMPLETED.
+Retourne une erreur si le statut est invalide.
+
+5. Filtrage par statut
+
+GET /api/tasks/ByStatut?statut=COMPLETED
+Filtre les tâches en fonction de leur statut.
+
+
+4. Logique métier
+4.1. Création d’une tâche (saveTask)
+
+Une nouvelle tâche est créée avec un statut initial PENDING.
+La date de création est automatiquement définie à l’instant actuel.
+La tâche est enregistrée en base de données.
+
+4.2. Récupération de toutes les tâches (getAllTasks)
+
+Retourne la liste complète des tâches sous forme d’objets TaskDTO.
+
+4.3. Suppression d’une tâche (deleteById)
+
+Vérifie si la tâche avec l’ID donné existe en base.
+Si oui, elle est supprimée.
+Si non, une exception TaskDoesNotExist est levée.
+
+4.4. Modification du statut d’une tâche (updateTaskStatus)
+
+Vérifie si la tâche avec l’ID donné existe.
+Modifie son statut selon la nouvelle valeur fournie.
+Enregistre les modifications en base.
+
+4.5. Récupération des tâches par statut 
+(getTasksByStatus)
+
+Filtre les tâches en fonction du statut demandé.
+
+5. Choix techniques
+
+Spring Boot : Framework rapide et efficace.
+
+JPA/Hibernate : Interface simplifiée pour la gestion des données.
+
+DTO : Évite d'exposer directement les entités.
+
+Gestion d'exceptions : TaskDoesNotExist permet une meilleure gestion des erreurs.
+
+6. Tests effectués
+
+Tests unitaires
+
+Vérification de la création d'une tâche.
+
+Test de suppression avec une tâche inexistante (exception attendue).
+
+Test de mise à jour de statut avec valeurs valides et invalides.
+
+Tests via Postman
+
+	Test de tout les endpoints avec leurs exceptions.
+
+
+L'API est donc fonctionnelle avec une gestion des erreurs robuste et une structure claire.
+
